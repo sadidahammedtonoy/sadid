@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "735067811724",
+    "project_id": "sadid-3ab64",
+    "storage_bucket": "sadid-3ab64.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:735067811724:android:a7c2178d2a1cb6ffc630a9",
+        "android_client_info": {
+          "package_name": "com.example.sadid"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "735067811724-938ifab0kn0s9fa6tdhff478uuvoklol.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBVQ76aU5DcfnNYfG4nNZECJb-N2o5uf4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "735067811724-938ifab0kn0s9fa6tdhff478uuvoklol.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
