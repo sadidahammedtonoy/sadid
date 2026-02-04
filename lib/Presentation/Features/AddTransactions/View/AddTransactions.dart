@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sadid/App/AppColors.dart';
 import 'package:sadid/Presentation/Features/AddTransactions/Model/addTransactionModel.dart';
 import '../../../../App/assets_path.dart';
 import '../../calcolator/View/calculator.dart';
@@ -106,12 +107,12 @@ class addTranscations extends StatelessWidget {
                                 children: [
                                   CupertinoButton(
                                     padding: EdgeInsets.zero,
-                                    child: const Text("Cancel"),
+                                    child: Text("Cancel".tr, style: TextStyle(color: Colors.black),),
                                     onPressed: () => Navigator.pop(context),
                                   ),
                                   CupertinoButton(
                                     padding: EdgeInsets.zero,
-                                    child: const Text("Done"),
+                                    child: Text("Done".tr, style: TextStyle(color: AppColors.primary),),
                                     onPressed: () {
                                       controller.selectedDate.value = temp;
                                       Navigator.pop(context);

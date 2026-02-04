@@ -9,6 +9,7 @@ class TranItem {
   final String wallet;
   final String category;
   final String note;
+  final bool marked; // ✅ new field
 
   TranItem({
     required this.id,
@@ -19,10 +20,12 @@ class TranItem {
     required this.wallet,
     required this.category,
     required this.note,
+    required this.marked, // ✅
   });
 
   factory TranItem.fromDoc(DocumentSnapshot doc, {required String monthKey}) {
     final data = doc.data() as Map<String, dynamic>;
+
     return TranItem(
       id: doc.id,
       monthKey: monthKey,
@@ -34,6 +37,7 @@ class TranItem {
       wallet: (data['wallet'] ?? '').toString(),
       category: (data['category'] ?? '').toString(),
       note: (data['note'] ?? '').toString(),
+      marked: (data['marked'] ?? false) == true, // ✅ safe read
     );
   }
 }

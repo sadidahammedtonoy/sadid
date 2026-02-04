@@ -486,15 +486,22 @@ class _TransactionTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.category,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 5,
+                      children: [
+                        Text(
+                          item.category,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        item.marked ? SizedBox.shrink() : Icon(Icons.check_circle, color: Colors.green, size: 15,)
+                      ],
                     ),
                     Row(
                       spacing: 3,
                       children: [
                         Text(
-                          item.wallet,
+                          item.wallet.tr,
                           style: const TextStyle(color: Colors.black54, fontSize: 12),
                         ),
                       ],

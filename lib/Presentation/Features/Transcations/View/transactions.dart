@@ -7,6 +7,7 @@ import '../Controller/Controller.dart';
 import '../Model/tranModel.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 class transcations_page extends StatelessWidget {
   final controller = Get.put(transactionsController());
 
@@ -162,7 +163,7 @@ Future<bool> showDeleteTransactionDialog() async {
       actions: [
         TextButton(
           onPressed: () => Get.back(result: false),
-          child: Text("Cancel".tr),
+          child: Text("Cancel".tr, style: TextStyle(color: Colors.black),),
         ),
         TextButton(
           onPressed: () => Get.back(result: true),
@@ -344,15 +345,22 @@ class _TransactionTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.category,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 5,
+                      children: [
+                        Text(
+                          item.category,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        item.marked ? SizedBox.shrink() : Icon(Icons.check_circle, color: Colors.green, size: 15,)
+                      ],
                     ),
                     Row(
                       spacing: 3,
                       children: [
                         Text(
-                          item.wallet,
+                          item.wallet.tr,
                           style: const TextStyle(color: Colors.black54, fontSize: 12),
                         ),
                       ],
@@ -477,7 +485,7 @@ void _showMonthFilterSheet(BuildContext context) {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Obx(() => _MonthTile(
                     icon: Icons.calendar_month_outlined,
-                    label: m,
+                    label: numberTranslation.formatMonthYearBnFromKey(m),
                     isSelected: controller.selectedMonth.value == m,
                     onTap: () {
                       controller.selectMonth(m);

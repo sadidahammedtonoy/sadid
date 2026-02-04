@@ -49,4 +49,59 @@ class numberTranslation {
 
     return "$day $month $year";
   }
+
+  static String formatMonthYearBnFromString(String input) {
+    if (!_isBangla) return input; // 👈 English 그대로 ফেরত
+
+    const monthMap = {
+      'Jan': 'জানুয়ারি',
+      'Feb': 'ফেব্রুয়ারি',
+      'Mar': 'মার্চ',
+      'Apr': 'এপ্রিল',
+      'May': 'মে',
+      'Jun': 'জুন',
+      'Jul': 'জুলাই',
+      'Aug': 'আগস্ট',
+      'Sep': 'সেপ্টেম্বর',
+      'Oct': 'অক্টোবর',
+      'Nov': 'নভেম্বর',
+      'Dec': 'ডিসেম্বর',
+    };
+
+    final parts = input.split(' '); // MMM yyyy
+    if (parts.length != 2) return input;
+
+    final month = monthMap[parts[0]] ?? parts[0];
+    final year = toBnDigits(parts[1]);
+
+    return "$month $year";
+  }
+
+  static String formatMonthYearBnFromKey(String input) {
+    if (!_isBangla) return input; // 👈 English 그대로 ফেরত
+
+    const monthMap = {
+      '01': 'জানুয়ারি',
+      '02': 'ফেব্রুয়ারি',
+      '03': 'মার্চ',
+      '04': 'এপ্রিল',
+      '05': 'মে',
+      '06': 'জুন',
+      '07': 'জুলাই',
+      '08': 'আগস্ট',
+      '09': 'সেপ্টেম্বর',
+      '10': 'অক্টোবর',
+      '11': 'নভেম্বর',
+      '12': 'ডিসেম্বর',
+    };
+
+    final parts = input.split('-'); // yyyy-MM
+    if (parts.length != 2) return input;
+
+    final year = toBnDigits(parts[0]);
+    final month = monthMap[parts[1]] ?? parts[1];
+
+    return "$month $year";
+  }
+
 }

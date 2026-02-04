@@ -21,8 +21,7 @@ class deptsPage extends StatelessWidget {
             StreamBuilder<Map<String, double>>(
               stream: controller.streamTotalLentBorrow(),
               builder: (context, snapshot) {
-                final data =
-                    snapshot.data ?? {"lent": 0.0, "borrow": 0.0, "net": 0.0};
+                final data = snapshot.data ?? {"lent": 0.0, "borrow": 0.0, "net": 0.0};
 
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -400,6 +399,12 @@ class _TransactionTile extends StatelessWidget {
                           ],
                         ),
 
+                        ElevatedButton(onPressed: () => Get.find<debtsController>().toggleTransactionMarked(monthKey: item.monthKey, transactionId: item.id),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: item.marked ? Colors.green : Colors.orange,
+                            ),
+
+                            child: Text("Mark as ${item.marked ? "Completed".tr : "Pending".tr}".tr, style: TextStyle(color: Colors.white),)),
                         ElevatedButton(onPressed: () => Get.back(), child: Text("Close".tr, style: TextStyle(color: Colors.white),))
 
 
@@ -436,15 +441,22 @@ class _TransactionTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      item.category,
-                      style: const TextStyle(fontWeight: FontWeight.w700),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      spacing: 5,
+                      children: [
+                        Text(
+                          item.category,
+                          style: const TextStyle(fontWeight: FontWeight.w700),
+                        ),
+                        item.marked ? SizedBox.shrink() : Icon(Icons.check_circle, color: Colors.green, size: 15,)
+                      ],
                     ),
                     Row(
                       spacing: 3,
                       children: [
                         Text(
-                          item.wallet,
+                          item.wallet.tr,
                           style: const TextStyle(color: Colors.black54, fontSize: 12),
                         ),
                       ],

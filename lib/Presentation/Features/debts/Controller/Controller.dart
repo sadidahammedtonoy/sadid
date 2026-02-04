@@ -4,13 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:sadid/Core/loading.dart';
+import '../../../../Core/snakbar.dart';
 import '../../Transcations/Model/tranModel.dart';
 
 class debtsController extends GetxController {
   final RxBool showBorrowInfo = false.obs;
 
-
-// Cache
+  // Cache
   final RxList<TranItem> cachedLentBorrow = <TranItem>[].obs;
   StreamSubscription<List<TranItem>>? _lentBorrowSub;
 
@@ -38,33 +39,44 @@ class debtsController extends GetxController {
         .doc(user.uid)
         .collection('monthly_transactions');
 
-    return monthsRef.snapshots().asyncMap((monthsSnap) async {
-      final result = <TranItem>[];
+    // Listen months list (realtime)
+    return monthsRef.snapshots().switchMap((monthsSnap) {
+      final monthDocs = monthsSnap.docs;
 
-      for (final monthDoc in monthsSnap.docs) {
-        final mk = monthDoc.id;
+      if (monthDocs.isEmpty) return Stream.value(<TranItem>[]);
 
-        if (mk.trim().isEmpty) continue;
+      // For each month, listen to its items (realtime)
+      final itemStreams = monthDocs.map((m) {
+        final mk = m.id;
+        if (mk.trim().isEmpty) return Stream.value(<TranItem>[]);
 
-        final itemsSnap = await monthsRef
+        return monthsRef
             .doc(mk)
             .collection('items')
-            .get();
+            .snapshots()
+            .map((itemsSnap) {
+          return itemsSnap.docs
+              .map((d) => TranItem.fromDoc(d, monthKey: mk))
+              .where((item) => item.type == "Lent" || item.type == "Borrow")
+              .toList();
+        });
+      }).toList();
 
-        for (final d in itemsSnap.docs) {
-          final item = TranItem.fromDoc(d, monthKey: mk);
-
-          if (item.type == "Lent" || item.type == "Borrow") {
-            result.add(item);
-          }
+      // Combine all months items -> one list
+      return CombineLatestStream.list<List<TranItem>>(itemStreams).map((lists) {
+        final all = <TranItem>[];
+        for (final l in lists) {
+          all.addAll(l);
         }
-      }
 
-      // newest first
-      result.sort((a, b) => b.date.compareTo(a.date));
-      return result;
+        all.sort((a, b) => b.date.compareTo(a.date)); // newest first
+        return all;
+      });
+
+
     });
   }
+
 
   Future<bool> deleteMonthlyTransaction({
     required String monthKey,
@@ -95,12 +107,20 @@ class debtsController extends GetxController {
     }
   }
 
+  final RxMap<String, double> _cachedLentBorrow = <String, double>{
+    "lent": 0.0,
+    "borrow": 0.0,
+    "net": 0.0,
+  }.obs;
+
   Stream<Map<String, double>> streamTotalLentBorrow() {
-    return streamLentBorrowTransactions().map((items) {
+    return streamLentBorrowTransactions()
+        .map((items) {
       double totalLent = 0.0;
       double totalBorrow = 0.0;
 
       for (final t in items) {
+        if (t.marked == false) break; // ✅ ignore completed
         if (t.type == "Lent") totalLent += t.amount;
         if (t.type == "Borrow") totalBorrow += t.amount;
       }
@@ -111,21 +131,63 @@ class debtsController extends GetxController {
         "net": totalLent - totalBorrow,
       };
 
-      // ✅ cache latest result
       _cachedLentBorrow.assignAll(result);
-
       return result;
-    }).startWith(_cachedLentBorrow); // 👈 return cached immediately
+    })
+        .startWith(_cachedLentBorrow);
   }
 
-  final RxMap<String, double> _cachedLentBorrow = <String, double>{
-    "lent": 0.0,
-    "borrow": 0.0,
-    "net": 0.0,
-  }.obs;
 
+  Future<bool> toggleTransactionMarked({
+    required String monthKey,
+    required String transactionId,
+  }) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        AppSnackbar.show("User not logged in".tr);
+        return false;
+      }
+      Get.back();
 
+      AppLoader.show();
 
+      final docRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('monthly_transactions')
+          .doc(monthKey)
+          .collection('items')
+          .doc(transactionId);
 
+      final snap = await docRef.get();
+      if (!snap.exists) {
+        AppLoader.hide();
+        AppSnackbar.show("Transaction not found".tr);
+        return false;
+      }
+
+      final data = snap.data()!;
+      final bool isMarked = (data["marked"] ?? false) == true;
+      final bool newValue = !isMarked;
+
+      await docRef.update({
+        "marked": newValue,
+        "markedAt": newValue ? FieldValue.serverTimestamp() : null,
+        "updatedAt": FieldValue.serverTimestamp(),
+      });
+
+      AppLoader.hide();
+      AppSnackbar.show(
+        newValue ? "Marked as completed".tr : "Marked as pending".tr,
+      );
+
+      return true;
+    } catch (e) {
+      AppLoader.hide();
+      AppSnackbar.show("Failed to update transaction".tr);
+      return false;
+    }
+  }
 
 }
