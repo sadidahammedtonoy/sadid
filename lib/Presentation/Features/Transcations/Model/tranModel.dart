@@ -37,7 +37,7 @@ class TranItem {
       wallet: (data['wallet'] ?? '').toString(),
       category: (data['category'] ?? '').toString(),
       note: (data['note'] ?? '').toString(),
-      marked: (data['marked'] ?? false) == true, // ✅ safe read
+      marked: data['marked'] ?? false,
     );
   }
 }

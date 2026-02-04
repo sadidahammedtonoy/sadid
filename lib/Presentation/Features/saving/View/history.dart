@@ -205,22 +205,54 @@ class _AllSavingsListWidgetState extends State<AllSavingsListWidget> {
             );
 
             final card = Container(
+              margin: const EdgeInsets.only(bottom: 25),
               padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.black12),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.black12),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(10,10)
+                    ),
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 12,
+                        offset: const Offset(-10,-10)
+                    )
+                  ]
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "${item.source} ",
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        "Saving".tr,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Divider(),
+                  const SizedBox(height: 5),
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        numberTranslation.toBnDigits(
-                          item.amount.toStringAsFixed(2),
-                        ),
+                        "৳ ${numberTranslation.toBnDigits(item.amount.toStringAsFixed(1))}",
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w900,
@@ -236,17 +268,11 @@ class _AllSavingsListWidgetState extends State<AllSavingsListWidget> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    item.source,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
                   const SizedBox(height: 4),
                   Row(
+                    spacing: 5,
                     children: [
+                      Icon(Icons.wallet, size: 15,),
                       Text(
                         "Wallet".tr,
                         style: const TextStyle(

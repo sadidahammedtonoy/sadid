@@ -344,13 +344,23 @@ class _TransactionTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       spacing: 10,
                       children: [
-                        Text("${item.type} Transaction".tr, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.sp, color: typeColor),),
+                        Row(
+                          spacing: 5,
+                          children: [
+                            Text(item.type.tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24.sp, color: typeColor),),
+                            Text("Transaction".tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.sp, color: Colors.black),),
+                          ],
+                        ),
+                        Align(
+                            alignment: Alignment.centerRight,
+                            child: Text("৳ ${numberTranslation.toBnDigits("${item.amount}")}", style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w800, color: Colors.black),)),
+                        Divider(),
                         item.type == "Lent" || item.type == "Borrow" ? Row(
                           spacing: 5,
                           children: [
                             Icon(Icons.person, color: Colors.black, size: 15,),
                             Text("Person Name:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                            Text(item.category, style: TextStyle(fontSize: 16.sp),),
+                            Text(item.category.isEmpty ? "No Name".tr : item.category, style: TextStyle(fontSize: 16.sp),),
                           ],
                         ) :
                         Row(
@@ -359,15 +369,6 @@ class _TransactionTile extends StatelessWidget {
                             Icon(Icons.category, color: Colors.black, size: 15,),
                             Text("Category:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
                             Text(item.category, style: TextStyle(fontSize: 16.sp,),),
-
-                          ],
-                        ),
-                        Row(
-                          spacing: 5,
-                          children: [
-                            Icon(Icons.wallet, color: Colors.black, size: 15,),
-                            Text("Amount:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                            Text("৳${item.amount}", style: TextStyle(fontSize: 16.sp),),
                           ],
                         ),
 
@@ -401,10 +402,10 @@ class _TransactionTile extends StatelessWidget {
 
                         ElevatedButton(onPressed: () => Get.find<debtsController>().toggleTransactionMarked(monthKey: item.monthKey, transactionId: item.id),
                             style: ElevatedButton.styleFrom(
-                                backgroundColor: item.marked ? Colors.green : Colors.orange,
+                                backgroundColor: item.marked ? Colors.orange : Colors.green,
                             ),
 
-                            child: Text("Mark as ${item.marked ? "Completed".tr : "Pending".tr}".tr, style: TextStyle(color: Colors.white),)),
+                            child: Text("Mark as ${item.marked ? "Pending".tr : "Completed".tr}".tr, style: TextStyle(color: Colors.white),)),
                         ElevatedButton(onPressed: () => Get.back(), child: Text("Close".tr, style: TextStyle(color: Colors.white),))
 
 
@@ -446,10 +447,10 @@ class _TransactionTile extends StatelessWidget {
                       spacing: 5,
                       children: [
                         Text(
-                          item.category,
+                          item.category.isEmpty ? "No Name".tr : item.category.tr,
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
-                        item.marked ? SizedBox.shrink() : Icon(Icons.check_circle, color: Colors.green, size: 15,)
+                        item.marked ? Icon(Icons.check_circle, color: Colors.green, size: 15,) : SizedBox.shrink()
                       ],
                     ),
                     Row(

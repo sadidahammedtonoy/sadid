@@ -120,7 +120,7 @@ class debtsController extends GetxController {
       double totalBorrow = 0.0;
 
       for (final t in items) {
-        if (t.marked == false) break; // ✅ ignore completed
+        if (t.marked) continue;
         if (t.type == "Lent") totalLent += t.amount;
         if (t.type == "Borrow") totalBorrow += t.amount;
       }

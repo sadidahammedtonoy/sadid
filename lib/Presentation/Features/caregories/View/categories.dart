@@ -12,7 +12,7 @@ class categories extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Categories"),
+        title: Text("Categories".tr),
         titleSpacing: -10,
       ),
       floatingActionButton: FloatingActionButton(
@@ -25,8 +25,8 @@ class categories extends StatelessWidget {
         final list = controller.categories;
 
         if (list.isEmpty) {
-          return const Center(
-            child: Text("No categories yet"),
+          return Center(
+            child: Text("No categories yet".tr),
           );
         }
 
@@ -50,7 +50,7 @@ class categories extends StatelessWidget {
               background: _swipeBg(
                 color: const Color(0xFF1976D2),
                 icon: Icons.edit,
-                text: "Edit",
+                text: "Edit".tr,
                 alignLeft: true,
               ),
 
@@ -58,7 +58,7 @@ class categories extends StatelessWidget {
               secondaryBackground: _swipeBg(
                 color: const Color(0xFFD32F2F),
                 icon: Icons.delete,
-                text: "Delete",
+                text: "Delete".tr,
                 alignLeft: false,
               ),
 
@@ -178,12 +178,12 @@ class categories extends StatelessWidget {
       barrierDismissible: false,
       AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text("Add Category"),
+        title: Text("Add Category".tr),
         content: TextField(
           controller: tc,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: "Category name",
+          decoration: InputDecoration(
+            hintText: "Category name".tr,
           ),
         ),
         actions: [
@@ -192,7 +192,7 @@ class categories extends StatelessWidget {
               Expanded(
                 child: TextButton(
                   onPressed: () => Get.back(),
-                  child: const Text("Cancel", style: TextStyle(color: Colors.black87),),
+                  child: Text("Cancel".tr, style: TextStyle(color: Colors.black87),),
                 ),
               ),
               Expanded(
@@ -202,7 +202,7 @@ class categories extends StatelessWidget {
                     Get.back();
                     await controller.addCategory(name);
                   },
-                  child: const Text("Add", style: TextStyle(color: Colors.white),),
+                  child: Text("Add".tr, style: TextStyle(color: Colors.white),),
                 ),
               ),
             ],
@@ -223,12 +223,12 @@ class categories extends StatelessWidget {
       barrierDismissible: false,
       AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text("Edit Category"),
+        title: Text("Edit Category".tr),
         content: TextField(
           controller: tc,
           autofocus: true,
-          decoration: const InputDecoration(
-            hintText: "Category name",
+          decoration: InputDecoration(
+            hintText: "Category name".tr,
           ),
         ),
         actions: [
@@ -237,7 +237,7 @@ class categories extends StatelessWidget {
               Expanded(
                 child: TextButton(
                   onPressed: () => Get.back(),
-                  child: const Text("Cancel", style: TextStyle(color: Colors.black),),
+                  child: Text("Cancel".tr, style: TextStyle(color: Colors.black),),
                 ),
               ),
               Expanded(
@@ -250,7 +250,7 @@ class categories extends StatelessWidget {
                       newName: newName,
                     );
                   },
-                  child: const Text("Save", style: TextStyle(color: Colors.white),),
+                  child: Text("Save".tr, style: TextStyle(color: Colors.white),),
                 ),
               ),
             ],
@@ -265,22 +265,22 @@ class categories extends StatelessWidget {
     return Get.dialog<bool>(
       AlertDialog(
         backgroundColor: Colors.white,
-        title: const Text("Delete Category?"),
-        content: Text('Are you sure you want to delete "$name"?'),
+        title: Text("Delete Category?".tr),
+        content: Text('${"Are you sure you want to delete".tr} "$name"?'),
         actions: [
           Row(
             children: [
               Expanded(
                 child: TextButton(
                   onPressed: () => Get.back(result: false),
-                  child: const Text("No", style: TextStyle(color: Colors.black),),
+                  child: Text("No".tr, style: TextStyle(color: Colors.black),),
                 ),
               ),
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD32F2F)),
                   onPressed: () => Get.back(result: true),
-                  child: const Text("Delete", style: TextStyle(color: Colors.white)),
+                  child: Text("Delete".tr, style: TextStyle(color: Colors.white)),
                 ),
               ),
             ],

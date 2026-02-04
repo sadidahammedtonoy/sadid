@@ -9,7 +9,7 @@ import '../../calcolator/View/calculator.dart';
 import '../Controller/Controller.dart';
 import '../Model/savingModel.dart';
 import 'history.dart';
-
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 class saving extends StatelessWidget {
   final controller = Get.put(savingController());
   saving({super.key});
@@ -72,7 +72,7 @@ class saving extends StatelessWidget {
     return result ?? false;
   }
 
-  Widget _card({required String title, required Widget child}) {
+  Widget _card({ required Widget child}) {
     return Container(
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
@@ -90,9 +90,18 @@ class saving extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Overall Saving".tr,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              ),
+              Text(
+                "Total History".tr,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              ),
+            ],
           ),
           const SizedBox(height: 10),
           child,
@@ -114,7 +123,7 @@ class saving extends StatelessWidget {
             onPressed: () => controller.openAddSavingSheet(context),
             icon: Icon(
               Icons.add_circle_outline_rounded,
-              color: AppColors.primary,
+              color: Colors.black54,
             ),
           ),
         ],
@@ -140,7 +149,6 @@ class saving extends StatelessWidget {
           children: [
             // ✅ 2) Overall Saving (stored separately)
             _card(
-              title: "Overall Saving".tr,
               child: StreamBuilder<double>(
                 stream: controller.streamOverallSaving(),
                 builder: (context, snap) {
@@ -152,14 +160,27 @@ class saving extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          // Text(numberTranslation.toBnDigits(controller.streamTotalSavingsText())),
-
                           Text(
                             "৳${numberTranslation.toBnDigits(overall.toStringAsFixed(1))}",
                             style: const TextStyle(
                               fontSize: 22,
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w800,
                             ),
+                          ),
+
+                          StreamBuilder<String>(
+                            stream: controller.streamTotalSavingsText(),
+                            builder: (context, snapshot) {
+                              final totalText = snapshot.data ?? "0";
+
+                              return Text(
+                                "৳${numberTranslation.toBnDigits(totalText)}", // or just totalText
+                                style: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -300,19 +321,6 @@ Widget allMonthSavingsList() {
     return DateFormat('MMM yyyy').format(dt);
   }
 
-  Widget row(String left, String right, {Color? color}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(left, style: const TextStyle(fontWeight: FontWeight.w600)),
-        Text(
-          numberTranslation.toBnDigits(right),
-          style: TextStyle(fontWeight: FontWeight.w800, color: color),
-        ),
-      ],
-    );
-  }
-
   Widget buildList(List<MonthSaving> months) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -321,34 +329,89 @@ Widget allMonthSavingsList() {
         final isPositive = saving >= 0;
 
         return Container(
-          margin: const EdgeInsets.only(bottom: 10),
+          margin: const EdgeInsets.only(bottom: 25),
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(14),
             border: Border.all(color: Colors.black12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.08),
+                blurRadius: 12,
+                offset: const Offset(10,10)
+              ),
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 12,
+                  offset: const Offset(-10,-10)
+              )
+            ]
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              row(
-                numberTranslation.formatMonthYearBnFromString(
-                  formatMonth(m.monthKey),
-                ),
-                "${isPositive ? '+' : ''} ${saving.toStringAsFixed(0)}৳",
-                color: isPositive ? Colors.green : Colors.red,
-              ),
-              const SizedBox(height: 8),
-              row(
-                "Income".tr,
-                "${numberTranslation.formatDateBnFromString(m.income.toStringAsFixed(0))}৳",
-                color: Colors.green,
-              ),
-              const SizedBox(height: 4),
-              row(
-                "Expense".tr,
-                "${m.expense.toStringAsFixed(0)}৳",
-                color: Colors.red,
+              Center(child: Text(numberTranslation.formatMonthYearBnFromString(formatMonth(m.monthKey),), style: TextStyle(fontSize: 25.sp, fontWeight: FontWeight.w600),)),
+              Divider(),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 3,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle
+                          ),
+                          child: Icon(Icons.trending_up_outlined, color: Colors.white, size: 15,)),
+                      Text("Income".tr, style: TextStyle(),),
+                      Text(
+                        "${numberTranslation.toBnDigits(m.income.toStringAsFixed(0))} ৳",
+                        style: TextStyle(fontWeight: FontWeight.w800, color: Colors.green, fontSize: 18.sp),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 3,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: Colors.redAccent,
+                              shape: BoxShape.circle
+                          ),
+                          child: Icon(Icons.trending_down, color: Colors.white, size: 15,)),
+                      Text("Expense".tr, style: TextStyle(),),
+                      Text(
+                        "${numberTranslation.toBnDigits(m.expense.toStringAsFixed(0))} ৳",
+                        style: TextStyle(fontWeight: FontWeight.w800, color: Colors.redAccent, fontSize: 18.sp),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    spacing: 3,
+                    children: [
+                      Container(
+                          padding: EdgeInsets.all(5),
+                          decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              shape: BoxShape.circle
+                          ),
+                          child: Icon(Icons.access_time_rounded, color: Colors.white, size: 15,)),
+                      Text("Total Balance".tr, style: TextStyle(),),
+                      Text(
+                        "${isPositive ? '+' : ''} ${numberTranslation.toBnDigits(saving.toStringAsFixed(0))} ৳",
+                        style: TextStyle(fontWeight: FontWeight.w800, color: isPositive ? Colors.green : Colors.redAccent, fontSize: 18.sp),
+                      ),
+                    ],
+                  )
+                ],
               ),
             ],
           ),

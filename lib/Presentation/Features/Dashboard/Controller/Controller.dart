@@ -315,4 +315,19 @@ class dashboardController extends GetxController {
     _todaySub?.cancel();
     super.onClose();
   }
+
+  int daysLeftInCurrentMonth() {
+    final now = DateTime.now();
+
+    // last day of this month
+    final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+
+    // difference in whole days
+    final diff = lastDayOfMonth.difference(
+      DateTime(now.year, now.month, now.day),
+    );
+
+    return diff.inDays;
+  }
+
 }

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sadid/App/routes.dart';
 import 'package:sadid/Core/loading.dart';
 import 'package:sadid/Core/snakbar.dart';
+import '../../../Features/caregories/Controller/Controller.dart';
 import '../Model/signupModel.dart';
 
 class signupController extends GetxController {
@@ -61,6 +62,7 @@ class signupController extends GetxController {
       // await user.sendEmailVerification();
       AppSnackbar.show("Account created successfully.".tr);
       Get.offAllNamed(routes.navbar_screen);
+      Get.find<caregoriesController>().addDefaultCategories();
 
       return credential;
     } on FirebaseAuthException catch (e) {
@@ -108,5 +110,7 @@ class signupController extends GetxController {
         return e.message ?? "Something went wrong. Please try again.".tr;
     }
   }
+
+
 
 }

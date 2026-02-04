@@ -102,4 +102,49 @@ class caregoriesController extends GetxController {
     await fetchCategories();
   }
 
+  Future<void> addDefaultCategories() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    const defaults = <String>[
+      "Food",
+      "Grocery",
+      "Transportation",
+      "Shopping",
+      "House Rent",
+      "Utilities",
+      "Internet",
+      "Mobile Recharge",
+      "Health",
+      "Education",
+      "Entertainment",
+      "Salary",
+      "Savings",
+      "Project",
+      "Others",
+    ];
+
+    for (final name in defaults) {
+      final trimmed = name.trim();
+
+      // duplicate check (case-insensitive)
+      final exists = categories.any((c) =>
+      (c["name"] ?? "")
+          .toString()
+          .trim()
+          .toLowerCase() ==
+          trimmed.toLowerCase());
+
+      if (exists) continue;
+
+      await _catRef(user.uid).add({
+        "name": trimmed,
+        "createdAt": FieldValue.serverTimestamp(),
+      });
+    }
+
+    await fetchCategories();
+  }
+
+
 }

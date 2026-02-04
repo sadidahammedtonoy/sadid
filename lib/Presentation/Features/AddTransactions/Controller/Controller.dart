@@ -69,17 +69,31 @@ class addTranscationsController extends GetxController {
       }, SetOptions(merge: true));
 
       final ref = monthRef.collection('items').doc();
+      if(model.type == "Lent" || model.type == "Borrow"){
+        await ref.set({
+          "type": model.type,
+          "date": Timestamp.fromDate(model.date),
+          "amount": model.amount,
+          "wallet": model.wallet,
+          "category": model.category,
+          "note": (model.note).trim(),
+          "monthKey": monthKey,
+          "createdAt": FieldValue.serverTimestamp(),
+          "marked": false,
+        });
+      }else{
+        await ref.set({
+          "type": model.type,
+          "date": Timestamp.fromDate(model.date),
+          "amount": model.amount,
+          "wallet": model.wallet,
+          "category": model.category,
+          "note": (model.note).trim(),
+          "monthKey": monthKey,
+          "createdAt": FieldValue.serverTimestamp(),
+        });
+      }
 
-      await ref.set({
-        "type": model.type,
-        "date": Timestamp.fromDate(model.date),
-        "amount": model.amount,
-        "wallet": model.wallet,
-        "category": model.category,
-        "note": (model.note).trim(),
-        "monthKey": monthKey,
-        "createdAt": FieldValue.serverTimestamp(),
-      });
 
       AppLoader.hide();
       Get.back();

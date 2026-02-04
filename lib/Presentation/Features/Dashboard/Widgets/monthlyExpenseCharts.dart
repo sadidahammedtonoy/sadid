@@ -111,7 +111,7 @@ class CategoryPieChart extends StatelessWidget {
                     ),
                     const SizedBox(width: 6),
                     Text(
-                      "${entry.key}: ${numberTranslation.toBnDigits(entry.value.toStringAsFixed(0))}৳",
+                      "${entry.key.tr}: ${numberTranslation.toBnDigits(entry.value.toStringAsFixed(0))}৳",
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),
                   ],

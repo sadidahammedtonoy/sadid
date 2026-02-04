@@ -116,6 +116,49 @@ class dashboardPage extends StatelessWidget {
                             },
                           ),
 
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: Colors.white,
+                                border: Border.all(
+                                  color: Colors.blueGrey,
+                                  width: 1,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.blueGrey.withOpacity(0.5),
+                                    offset: const Offset(4, 1),
+                                    blurRadius: 15,
+                                  )
+                                ]
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                    padding: EdgeInsets.all(10),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blueGrey.withAlpha(150),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(Icons.today, size: 30, color: Colors.white,)
+                                ),
+                                const SizedBox(height: 20, width: 110,),
+                                Text("Daily Limit".tr, style: TextStyle(fontSize: 16.sp),),
+                                Text(
+                                  "৳${numberTranslation.toBnDigits(
+                                    ((((data["income"] ?? 0) - (data["expense"] ?? 0)) /
+                                        controller.daysLeftInCurrentMonth()))
+                                        .toStringAsFixed(0),
+                                  )}",
+                                  style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),
+                                ),
+
+                              ],
+                            ),
+                          ),
+
 
                           Container(
                             padding: EdgeInsets.all(15),
@@ -395,7 +438,18 @@ class _TransactionTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 10,
                     children: [
-                      Text("${item.type} Transaction".tr, style: TextStyle(fontWeight: FontWeight.w700, fontSize: 18.sp, color: typeColor),),
+                      Row(
+                        spacing: 5,
+                        children: [
+                          Text(item.type.tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24.sp, color: typeColor),),
+                          Text("Transaction".tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.sp, color: Colors.black),),
+                        ],
+                      ),
+                      Align(
+                          alignment: Alignment.centerRight,
+                          child: Text("৳ ${numberTranslation.toBnDigits("${item.amount}")}", style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w800, color: Colors.black),)),
+                      Divider(),
+
                       item.type == "Lent" || item.type == "Borrow" ? Row(
                         spacing: 5,
                         children: [
@@ -409,16 +463,8 @@ class _TransactionTile extends StatelessWidget {
                         children: [
                           Icon(Icons.category, color: Colors.black, size: 15,),
                           Text("Category:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text(item.category, style: TextStyle(fontSize: 16.sp,),),
+                          Text(item.category.isEmpty ? "Uncategorized".tr : item.category, style: TextStyle(fontSize: 16.sp,),),
 
-                        ],
-                      ),
-                      Row(
-                        spacing: 5,
-                        children: [
-                          Icon(Icons.wallet, color: Colors.black, size: 15,),
-                          Text("Amount:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text("৳${item.amount}", style: TextStyle(fontSize: 16.sp),),
                         ],
                       ),
 
@@ -427,7 +473,7 @@ class _TransactionTile extends StatelessWidget {
                         children: [
                           Icon(Icons.account_balance_wallet, color: Colors.black, size: 15,),
                           Text("Wallet:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text(item.wallet, style: TextStyle(fontSize: 16.sp),),
+                          Text(item.wallet.tr, style: TextStyle(fontSize: 16.sp),),
                         ],
                       ),
 
@@ -491,10 +537,10 @@ class _TransactionTile extends StatelessWidget {
                       spacing: 5,
                       children: [
                         Text(
-                          item.category,
+                          item.category.isEmpty ? "Uncategorized".tr : item.category.tr,
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
-                        item.marked ? SizedBox.shrink() : Icon(Icons.check_circle, color: Colors.green, size: 15,)
+                        item.marked ? Icon(Icons.check_circle, color: Colors.green, size: 15,) : SizedBox.shrink()
                       ],
                     ),
                     Row(

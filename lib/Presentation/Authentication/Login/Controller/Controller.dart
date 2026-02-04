@@ -6,6 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sadid/App/routes.dart';
 import '../../../../Core/loading.dart';
 import '../../../../Core/snakbar.dart';
+import '../../../Features/caregories/Controller/Controller.dart';
 
 class loginController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -120,6 +121,8 @@ class loginController extends GetxController {
 
       AppLoader.hide();
       AppSnackbar.show("Logged in as guest".tr);
+      Get.find<caregoriesController>().addDefaultCategories();
+
 
       // Navigate
       Get.offAllNamed(routes.navbar_screen);
@@ -234,6 +237,12 @@ class loginController extends GetxController {
         return null;
       }
 
+      // ✅ Detect new user
+      final isNewUser = userCredential.additionalUserInfo?.isNewUser == true;
+      if (isNewUser) {
+        Get.find<caregoriesController>().addDefaultCategories();
+      }
+
       // 4) Save / update user in Firestore
       await _db.collection("users").doc(user.uid).set({
         "uid": user.uid,
@@ -251,7 +260,7 @@ class loginController extends GetxController {
       await applyOrSaveLanguageAndContinue(user);
 
       return userCredential;
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (_) {
       AppSnackbar.show("Google Sign-In Failed".tr);
       return null;
     } catch (_) {
