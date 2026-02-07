@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sadid/App/routes.dart';
+import 'package:sadid/Core/snakbar.dart';
 
 class SplashController extends GetxController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -10,10 +14,13 @@ class SplashController extends GetxController {
   final RxBool isLoggedIn = false.obs;
   final RxBool isGuest = false.obs;
   final RxBool isNewUser = false.obs;
+  final RxBool isOffline = false.obs;
+
 
   @override
   void onInit() {
     super.onInit();
+    Future.microtask(() async {});
     _init();
   }
 
@@ -82,4 +89,30 @@ class SplashController extends GetxController {
       Get.offAllNamed(routes.login_screen);
     }
   }
+
+
+  Future<bool> checkInternetOrShowOffline({
+    required void Function(String message) showMessage,
+  }) async {
+    // 1) Quick check: any network?
+    final connectivity = await Connectivity().checkConnectivity();
+    final hasNetwork = connectivity != ConnectivityResult.none;
+
+    if (!hasNetwork) {
+      isOffline.value = true;
+      AppSnackbar.show("You're using Trackio offline. Please connect to the internet.");
+      return false;
+    }
+
+    // 2) Real check: can we reach internet?
+    final hasInternet = await InternetConnectionChecker().hasConnection;
+    if (!hasInternet) {
+      isOffline.value = true;
+      AppSnackbar.show("You're using Trackio offline. Please connect to the internet.");
+      return false;
+    }
+
+    return true;
+  }
+
 }

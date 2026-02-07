@@ -13,6 +13,7 @@ class Splash extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Lottie.asset("assets/json/Wallet Essentials_ Money & Savings.json", repeat: false),
+
       ),
     );
   }

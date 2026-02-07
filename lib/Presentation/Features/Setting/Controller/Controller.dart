@@ -44,7 +44,11 @@ class settingController extends GetxController {
       AlertDialog(
         backgroundColor: Colors.white,
         title: Text("Logout".tr),
-        content: Text("Are you sure you want to logout?".tr),
+        content: Text(
+          isGuestUser()
+              ? "You’re using a guest account. Logging out will permanently remove access to your data. Make your account permanent to keep your data safe.".tr
+              : "Are you sure you want to logout?".tr,
+        ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         actions: [
           Row(

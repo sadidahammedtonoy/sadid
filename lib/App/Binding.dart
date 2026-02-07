@@ -9,6 +9,7 @@ import '../Presentation/Features/Setting/Controller/Controller.dart';
 import '../Presentation/Features/Transcations/Controller/Controller.dart';
 import '../Presentation/Features/caregories/Controller/Controller.dart';
 import '../Presentation/Features/debts/Controller/Controller.dart';
+import '../Presentation/Features/editTransactions/Controller/Controller.dart';
 import '../Presentation/Features/saving/Controller/Controller.dart';
 import '../Presentation/Splash/Controller/Controller.dart';
 import '../Presentation/helpSupport/Controller/Controller.dart';
@@ -32,6 +33,7 @@ class InitialBinding extends Bindings {
     Get.lazyPut<savingController>(() => savingController(), fenix: true);
     Get.lazyPut<signupController>(() => signupController(), fenix: true);
     Get.lazyPut<ForgotPasswordController>(() => ForgotPasswordController(), fenix: true);
+    Get.lazyPut<editTransactionsController>(() => editTransactionsController(), fenix: true);
 
 
   }

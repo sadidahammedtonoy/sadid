@@ -366,5 +366,35 @@ class dashboardController extends GetxController {
     });
   }
 
+  Stream<double> streamTotalSavings() {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return const Stream.empty();
+
+    return FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .collection('savings')
+        .doc('items')
+        .collection('list')
+        .snapshots()
+        .map((snap) {
+      double total = 0.0;
+
+      for (final d in snap.docs) {
+        final data = d.data();
+        final raw = data['amount'];
+
+        final amount = (raw is String)
+            ? double.tryParse(raw) ?? 0.0
+            : (raw as num?)?.toDouble() ?? 0.0;
+
+        total += amount;
+      }
+
+      return total; // ✅ return number
+    });
+  }
+
+
 
 }

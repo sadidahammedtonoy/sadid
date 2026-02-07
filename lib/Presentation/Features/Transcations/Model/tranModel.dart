@@ -9,7 +9,7 @@ class TranItem {
   final String wallet;
   final String category;
   final String note;
-  final bool marked; // ✅ new field
+  final bool marked;
 
   TranItem({
     required this.id,

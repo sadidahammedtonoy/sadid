@@ -154,6 +154,8 @@ class loginController extends GetxController {
         password: p,
       );
 
+      AppLoader.hide();
+
       final user = result.user;
       if (user == null) {
         AppSnackbar.show("Login failed. Please try again.".tr);
@@ -167,20 +169,20 @@ class loginController extends GetxController {
 
       return user;
     } on FirebaseAuthException catch (e) {
+      print("I am here ${e.code}");
+      AppLoader.hide();
       if (e.code == 'user-not-found') {
         AppSnackbar.show("No user found with this email.".tr);
         return null;
       }
 
-      if (e.code == 'wrong-password' ||
-          e.code == 'invalid-credential' ||
-          e.code == 'INVALID_LOGIN_CREDENTIALS') {
-        AppSnackbar.show("Incorrect password.".tr);
+      if (e.code == 'invalid-email') {
+        AppSnackbar.show("Invalid email address.".tr);
         return null;
       }
 
-      if (e.code == 'invalid-email') {
-        AppSnackbar.show("Invalid email address.".tr);
+      if (e.code == 'invalid-credential') {
+        AppSnackbar.show("This email is not linked to any account.".tr);
         return null;
       }
 
@@ -196,6 +198,12 @@ class loginController extends GetxController {
 
       if (e.code == 'network-request-failed') {
         AppSnackbar.show("No internet connection.".tr);
+        return null;
+      }
+
+      if (e.code == 'wrong-password' ||
+          e.code == 'INVALID_LOGIN_CREDENTIALS') {
+        AppSnackbar.show("Incorrect password.".tr);
         return null;
       }
 

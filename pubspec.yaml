@@ -50,6 +50,8 @@ dependencies:
   google_sign_in: ^6.2.1
   flutter_launcher_icons: ^0.14.4
   rxdart: ^0.27.7
+  connectivity_plus: ^6.0.5
+  internet_connection_checker: ^1.0.0+1
 
 
 dev_dependencies:

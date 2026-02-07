@@ -66,7 +66,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                           ? const SizedBox(
                         height: 18,
                         width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator.adaptive(),
                       )
                           : Text(
                         "Send Reset Link".tr,

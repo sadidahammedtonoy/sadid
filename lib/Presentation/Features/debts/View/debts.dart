@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../Core/numberTranslation.dart';
 import '../../Transcations/Model/tranModel.dart';
+import '../../editTransactions/Controller/Controller.dart';
+import '../../editTransactions/View/editTransactions.dart';
 import '../Controller/Controller.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -292,9 +294,51 @@ class _TransactionTile extends StatelessWidget {
     return Dismissible(
       key: ValueKey(item.id),
 
-      // ✅ Only swipe left
-      direction: DismissDirection.endToStart,
-      background: const SizedBox.shrink(),
+
+      direction: DismissDirection.horizontal,
+
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.edit, color: Colors.blue),
+            const SizedBox(width: 8),
+            Text(
+              "Edit".tr,
+              style: const TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      confirmDismiss: (direction) async {
+        // ✅ Swipe Left → Right = Edit (DON'T dismiss)
+        if (direction == DismissDirection.startToEnd) {
+          Get.find<editTransactionsController>().assignValues(item);
+          Get.to(editTransactions(model: item,));
+          return false;
+        }
+
+        // ✅ Swipe Right → Left = Delete (confirm + dismiss)
+        if (direction == DismissDirection.endToStart) {
+          final confirm = await showDeleteTransactionDialog();
+          if (!confirm) return false;
+
+          await onDelete();
+          return true;
+        }
+
+        return false;
+      },
 
 
       secondaryBackground: Container(
@@ -318,16 +362,7 @@ class _TransactionTile extends StatelessWidget {
         ),
       ),
 
-      confirmDismiss: (direction) async {
-        if (direction != DismissDirection.endToStart) return false;
 
-        final confirm = await showDeleteTransactionDialog();
-        if (!confirm) return false;
-
-        await onDelete();
-
-        return true;
-      },
 
 
       child: Padding(

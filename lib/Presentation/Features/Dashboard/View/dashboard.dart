@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sadid/Core/numberTranslation.dart';
+import '../../../../App/routes.dart';
 import '../../Transcations/Model/tranModel.dart';
+import '../../editTransactions/Controller/Controller.dart';
+import '../../editTransactions/View/editTransactions.dart';
 import '../Controller/Controller.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../Widgets/monthlyExpenseCharts.dart';
@@ -11,25 +14,21 @@ class dashboardPage extends StatelessWidget {
   dashboardPage({super.key});
   final dashboardController controller = Get.find<dashboardController>();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      appBar: AppBar(
-        title: Text("Dashboard".tr),
-        centerTitle: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              StreamBuilder<Map<String, double>>(
+      appBar: AppBar(title: Text("Dashboard".tr), centerTitle: false),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: StreamBuilder<Map<String, double>>(
                 stream: controller.streamThisMonthSummary(),
                 builder: (context, snap) {
-                  final data = snap.data ?? {"expense": 0, "income": 0, "saving": 0};
+                  final data =
+                      snap.data ?? {"expense": 0, "income": 0, "saving": 0};
 
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
@@ -41,43 +40,53 @@ class dashboardPage extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.blueAccent,
-                                  width: 1,
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.blueAccent,
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blue.withOpacity(0.5),
+                                  offset: const Offset(4, 1),
+                                  blurRadius: 10,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.blue.withOpacity(0.5),
-                                    offset: const Offset(4, 1),
-                                    blurRadius: 10,
-                                  )
-                                ]
+                              ],
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blueAccent.withAlpha(150),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(Icons.account_balance_wallet_outlined, size: 30, color: Colors.white,)
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueAccent.withAlpha(150),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.account_balance_wallet_outlined,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                const SizedBox(height: 20, width: 110,),
-                                Text("Remaining".tr, style: TextStyle(fontSize: 16.sp),),
+                                const SizedBox(height: 20, width: 110),
+                                Text(
+                                  "Remaining".tr,
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
                                 StreamBuilder<double>(
                                   stream: controller.streamThisMonthSavings(),
                                   builder: (context, snap) {
                                     final v = snap.data ?? 0.0;
-                                    return Text("৳${numberTranslation.toBnDigits("${(data["income"] ?? 0) - (data["expense"] ?? 0) - v}")}", style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),);
+                                    return Text(
+                                      "৳${numberTranslation.toBnDigits("${(data["income"] ?? 0) - (data["expense"] ?? 0) - v}")}",
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    );
                                   },
-                                )
-
-
-
+                                ),
                               ],
                             ),
                           ),
@@ -88,125 +97,148 @@ class dashboardPage extends StatelessWidget {
                               return Container(
                                 padding: EdgeInsets.all(15),
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.white,
-                                    border: Border.all(
-                                      color: Colors.orange,
-                                      width: 1,
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.orange,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.orange.withOpacity(0.5),
+                                      offset: const Offset(4, 1),
+                                      blurRadius: 10,
                                     ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.orange.withOpacity(0.5),
-                                        offset: const Offset(4, 1),
-                                        blurRadius: 10,
-                                      )
-                                    ]
+                                  ],
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                        padding: EdgeInsets.all(10),
-                                        decoration: BoxDecoration(
-                                          color: Colors.orange.withAlpha(150),
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Icon(Icons.receipt_long_outlined, size: 30, color: Colors.white,)
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange.withAlpha(150),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.receipt_long_outlined,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
                                     ),
-                                    const SizedBox(height: 20, width: 100,),
-                                    Text("Today Expense".tr, style: TextStyle(fontSize: 16.sp),),
-                                    Text("৳${numberTranslation.toBnDigits("$todayExpense")}", style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
-
+                                    const SizedBox(height: 20, width: 100),
+                                    Text(
+                                      "Today Expense".tr,
+                                      style: TextStyle(fontSize: 16.sp),
+                                    ),
+                                    Text(
+                                      "৳${numberTranslation.toBnDigits("$todayExpense")}",
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
                                   ],
                                 ),
                               );
-
                             },
                           ),
 
                           Container(
                             padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.blueGrey,
-                                  width: 1,
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(color: Colors.red, width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.redAccent.withOpacity(0.5),
+                                  offset: const Offset(4, 1),
+                                  blurRadius: 10,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.blueGrey.withOpacity(0.5),
-                                    offset: const Offset(4, 1),
-                                    blurRadius: 15,
-                                  )
-                                ]
+                              ],
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.blueGrey.withAlpha(150),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(Icons.today, size: 30, color: Colors.white,)
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.redAccent.withAlpha(150),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.trending_down,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                const SizedBox(height: 20, width: 110,),
-                                Text("Daily Limit".tr, style: TextStyle(fontSize: 16.sp),),
+                                const SizedBox(height: 20, width: 110),
+                                Text(
+                                  "Expense".tr,
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                                Text(
+                                  "৳${numberTranslation.toBnDigits("${data["expense"]}")}",
+                                  style: TextStyle(
+                                    fontSize: 22.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          Container(
+                            padding: EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.blueGrey,
+                                width: 1,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blueGrey.withOpacity(0.5),
+                                  offset: const Offset(4, 1),
+                                  blurRadius: 15,
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blueGrey.withAlpha(150),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.today,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 20, width: 110),
+                                Text(
+                                  "Daily Limit".tr,
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
                                 StreamBuilder<double>(
                                   stream: controller.streamThisMonthSavings(),
                                   builder: (context, snap) {
                                     final v = snap.data ?? 0.0;
                                     return Text(
-                                      "৳${numberTranslation.toBnDigits(
-                                        ((((data["income"] ?? 0) - (data["expense"] ?? 0) - v) /
-                                            controller.daysLeftInCurrentMonth()))
-                                            .toStringAsFixed(1),
-                                      )}",
-                                      style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),
+                                      "৳${numberTranslation.toBnDigits(((((data["income"] ?? 0) - (data["expense"] ?? 0) - v) / controller.daysLeftInCurrentMonth())).toStringAsFixed(1))}",
+                                      style: TextStyle(
+                                        fontSize: 22.sp,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     );
                                   },
-                                )
-
-
-                              ],
-                            ),
-                          ),
-
-
-                          Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.green,
-                                  width: 1,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.green.withOpacity(0.5),
-                                    offset: const Offset(4, 1),
-                                    blurRadius: 10,
-                                  )
-                                ]
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.green.withAlpha(150),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(Icons.trending_up_outlined, size: 30, color: Colors.white,)
-                                ),
-                                const SizedBox(height: 20, width: 110,),
-                                Text("Income".tr, style: TextStyle(fontSize: 16.sp),),
-                                Text("৳${numberTranslation.toBnDigits("${data["income"]}")}", style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
-
                               ],
                             ),
                           ),
@@ -214,98 +246,148 @@ class dashboardPage extends StatelessWidget {
                           Container(
                             padding: EdgeInsets.all(15),
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.red,
-                                  width: 1,
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(color: Colors.green, width: 1),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.green.withOpacity(0.5),
+                                  offset: const Offset(4, 1),
+                                  blurRadius: 10,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.redAccent.withOpacity(0.5),
-                                    offset: const Offset(4, 1),
-                                    blurRadius: 10,
-                                  )
-                                ]
+                              ],
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.redAccent.withAlpha(150),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(Icons.trending_down, size: 30, color: Colors.white,)
+                                  padding: EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.green.withAlpha(150),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.trending_up_outlined,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                                const SizedBox(height: 20, width: 110,),
-                                Text("Expense".tr, style: TextStyle(fontSize: 16.sp),),
-                                Text("৳${numberTranslation.toBnDigits("${data["expense"]}")}", style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
-
+                                const SizedBox(height: 20, width: 110),
+                                Text(
+                                  "Income".tr,
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                                Text(
+                                  "৳${numberTranslation.toBnDigits("${data["income"]}")}",
+                                  style: TextStyle(
+                                    fontSize: 22.sp,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
-                      StreamBuilder<double>(
-                        stream: controller.streamOverallSavingOnly(),
-                        builder: (context, snapshot) {
-                          final saving = snapshot.data ?? 0.0;
 
-                          return Container(
-                            padding: EdgeInsets.all(15),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: Colors.white,
-                                border: Border.all(
-                                  color: Colors.cyan,
-                                  width: 1,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.cyan.withOpacity(0.5),
-                                    offset: const Offset(4, 1),
-                                    blurRadius: 10,
-                                  )
-                                ]
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                    padding: EdgeInsets.all(10),
-                                    decoration: BoxDecoration(
-                                      color: Colors.cyan.withAlpha(150),
-                                      shape: BoxShape.circle,
+                          StreamBuilder<double>(
+                            stream: controller.streamOverallSavingOnly(),
+                            builder: (context, snapshot) {
+                              final saving = snapshot.data ?? 0.0;
+
+                              return Container(
+                                padding: EdgeInsets.all(15),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.cyan,
+                                    width: 1,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.cyan.withOpacity(0.5),
+                                      offset: const Offset(4, 1),
+                                      blurRadius: 10,
                                     ),
-                                    child: Icon(Icons.savings_outlined, size: 30, color: Colors.white,)
+                                  ],
                                 ),
-                                const SizedBox(height: 20, width: 110,),
-                                Text("Saving".tr, style: TextStyle(fontSize: 16.sp),),
-                                Text("৳${numberTranslation.toBnDigits(saving.toStringAsFixed(0))}", style: TextStyle(fontSize: 22.sp, fontWeight: FontWeight.w500),),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.all(10),
+                                      decoration: BoxDecoration(
+                                        color: Colors.cyan.withAlpha(150),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.savings_outlined,
+                                        size: 30,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20, width: 110),
+                                    Text(
+                                      "Saving".tr,
+                                      style: TextStyle(fontSize: 16.sp),
+                                    ),
+                                    StreamBuilder<double>(
+                                      stream: controller.streamTotalSavings(),
+                                      builder: (_, snap) {
+                                        final total = snap.data ?? 0.0;
+                                        return Text(
+                                          "৳${numberTranslation.toBnDigits((total + saving).toStringAsFixed(1))}",
+                                          style: TextStyle(
+                                            fontSize: 22.sp,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                     ),
                   );
-
                 },
               ),
-              const SizedBox(height: 15),
-              Text(
+            ),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: Text(
                 "Category Breakdown".tr,
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
               ),
-              const Padding(
-                padding: EdgeInsets.all(12),
-                child: CategoryPieChart(),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(12),
+              child: CategoryPieChart(),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: GestureDetector(
+                onTap: () async {
+                  Get.toNamed(routes.addTranscations_screen);
+                },
+                child: Text(
+                  "Today Transactions".tr,
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
-              StreamBuilder<List<TranItem>>(
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              child: StreamBuilder<List<TranItem>>(
                 stream: controller.streamTodayTransactions(),
-                initialData: controller.cachedTodayItems, // ✅ show cached instantly
+                initialData:
+                    controller.cachedTodayItems, // ✅ show cached instantly
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
                     return Center(child: Text("Error: ${snapshot.error}"));
@@ -324,34 +406,31 @@ class dashboardPage extends StatelessWidget {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        "Today Transactions".tr,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
-                      ),
-                      const SizedBox(height: 10),
 
-                      ...items.map((t) => _TransactionTile(
-                        item: t,
-                        onDelete: () async {
-                          await controller.deleteMonthlyTransaction(
-                            monthKey: t.monthKey,
-                            transactionId: t.id,
-                          );
-                        },
-                      )),
+                      const SizedBox(height: 5),
+
+                      ...items.map(
+                        (t) => _TransactionTile(
+                          item: t,
+                          onDelete: () async {
+                            await controller.deleteMonthlyTransaction(
+                              monthKey: t.monthKey,
+                              transactionId: t.id,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   );
                 },
-              )
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-
 
 Future<bool> showDeleteTransactionDialog() async {
   final result = await Get.dialog<bool>(
@@ -375,12 +454,8 @@ Future<bool> showDeleteTransactionDialog() async {
   return result ?? false;
 }
 
-
 class _TransactionTile extends StatelessWidget {
-  const _TransactionTile({
-    required this.item,
-    required this.onDelete,
-  });
+  const _TransactionTile({required this.item, required this.onDelete});
 
   final TranItem item;
   final Future<void> Function() onDelete;
@@ -395,16 +470,58 @@ class _TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateText = numberTranslation.formatDateBnFromString(DateFormat('dd MMM yyyy').format(item.date));
+    final dateText = numberTranslation.formatDateBnFromString(
+      DateFormat('dd MMM yyyy').format(item.date),
+    );
     final typeColor = _typeColor(item.type);
 
     return Dismissible(
       key: ValueKey(item.id),
 
-      // ✅ Only swipe left
-      direction: DismissDirection.endToStart,
-      background: const SizedBox.shrink(),
+      direction: DismissDirection.horizontal,
 
+      background: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.edit, color: Colors.blue),
+            const SizedBox(width: 8),
+            Text(
+              "Edit".tr,
+              style: const TextStyle(
+                color: Colors.blue,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
+      ),
+
+      confirmDismiss: (direction) async {
+        // ✅ Swipe Left → Right = Edit (DON'T dismiss)
+        if (direction == DismissDirection.startToEnd) {
+          Get.find<editTransactionsController>().assignValues(item);
+          Get.to(editTransactions(model: item));
+          return false;
+        }
+
+        // ✅ Swipe Right → Left = Delete (confirm + dismiss)
+        if (direction == DismissDirection.endToStart) {
+          final confirm = await showDeleteTransactionDialog();
+          if (!confirm) return false;
+
+          await onDelete();
+          return true;
+        }
+
+        return false;
+      },
 
       secondaryBackground: Container(
         margin: const EdgeInsets.only(bottom: 10),
@@ -427,22 +544,20 @@ class _TransactionTile extends StatelessWidget {
         ),
       ),
 
-      confirmDismiss: (direction) async {
-        if (direction != DismissDirection.endToStart) return false;
-
-        final confirm = await showDeleteTransactionDialog();
-        if (!confirm) return false;
-
-        await onDelete();
-
-        return true;
-      },
-
-
+      // confirmDismiss: (direction) async {
+      //   if (direction != DismissDirection.endToStart) return false;
+      //
+      //   final confirm = await showDeleteTransactionDialog();
+      //   if (!confirm) return false;
+      //
+      //   await onDelete();
+      //
+      //   return true;
+      // },
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: GestureDetector(
-          onLongPress: (){
+          onLongPress: () {
             Get.dialog(
               Dialog(
                 backgroundColor: Colors.white,
@@ -456,48 +571,121 @@ class _TransactionTile extends StatelessWidget {
                       Row(
                         spacing: 5,
                         children: [
-                          Text(item.type.tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 24.sp, color: typeColor),),
-                          Text("Transaction".tr, style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22.sp, color: Colors.black),),
+                          Text(
+                            item.type.tr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24.sp,
+                              color: typeColor,
+                            ),
+                          ),
+                          Text(
+                            "Transaction".tr,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 22.sp,
+                              color: Colors.black,
+                            ),
+                          ),
                         ],
                       ),
                       Align(
-                          alignment: Alignment.centerRight,
-                          child: Text("৳ ${numberTranslation.toBnDigits("${item.amount}")}", style: TextStyle(fontSize: 30.sp, fontWeight: FontWeight.w800, color: Colors.black),)),
+                        alignment: Alignment.centerRight,
+                        child: Text(
+                          "৳ ${numberTranslation.toBnDigits("${item.amount}")}",
+                          style: TextStyle(
+                            fontSize: 30.sp,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
                       Divider(),
 
-                      item.type == "Lent" || item.type == "Borrow" ? Row(
-                        spacing: 5,
-                        children: [
-                          Icon(Icons.person, color: Colors.black, size: 15,),
-                          Text("Person Name:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text(item.category, style: TextStyle(fontSize: 16.sp),),
-                        ],
-                      ) :
+                      item.type == "Lent" || item.type == "Borrow"
+                          ? Row(
+                              spacing: 5,
+                              children: [
+                                Icon(
+                                  Icons.person,
+                                  color: Colors.black,
+                                  size: 15,
+                                ),
+                                Text(
+                                  "Person Name:".tr,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  item.category,
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            )
+                          : Row(
+                              spacing: 5,
+                              children: [
+                                Icon(
+                                  Icons.category,
+                                  color: Colors.black,
+                                  size: 15,
+                                ),
+                                Text(
+                                  "Category:".tr,
+                                  style: TextStyle(
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                Text(
+                                  item.category.isEmpty
+                                      ? "Uncategorized".tr
+                                      : item.category.tr,
+                                  style: TextStyle(fontSize: 16.sp),
+                                ),
+                              ],
+                            ),
+
                       Row(
                         spacing: 5,
                         children: [
-                          Icon(Icons.category, color: Colors.black, size: 15,),
-                          Text("Category:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text(item.category.isEmpty ? "Uncategorized".tr : item.category.tr, style: TextStyle(fontSize: 16.sp,),),
-
+                          Icon(
+                            Icons.account_balance_wallet,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                          Text(
+                            "Wallet:".tr,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(
+                            item.wallet.tr,
+                            style: TextStyle(fontSize: 16.sp),
+                          ),
                         ],
                       ),
 
                       Row(
                         spacing: 5,
                         children: [
-                          Icon(Icons.account_balance_wallet, color: Colors.black, size: 15,),
-                          Text("Wallet:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text(item.wallet.tr, style: TextStyle(fontSize: 16.sp),),
-                        ],
-                      ),
-
-                      Row(
-                        spacing: 5,
-                        children: [
-                          Icon(Icons.date_range_rounded, color: Colors.black, size: 15,),
-                          Text("Date:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Text(dateText, style: TextStyle(fontSize: 16.sp),),
+                          Icon(
+                            Icons.date_range_rounded,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                          Text(
+                            "Date:".tr,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Text(dateText, style: TextStyle(fontSize: 16.sp)),
                         ],
                       ),
 
@@ -505,20 +693,38 @@ class _TransactionTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 5,
                         children: [
-                          Icon(Icons.edit_note_outlined, color: Colors.black, size: 15,),
-                          Text("Remark:".tr, style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.w600),),
-                          Expanded(child: Text(item.note.isEmpty ? "No Remark".tr : item.note, style: TextStyle(fontSize: 16.sp),)),
+                          Icon(
+                            Icons.edit_note_outlined,
+                            color: Colors.black,
+                            size: 15,
+                          ),
+                          Text(
+                            "Remark:".tr,
+                            style: TextStyle(
+                              fontSize: 16.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              item.note.isEmpty ? "No Remark".tr : item.note,
+                              style: TextStyle(fontSize: 16.sp),
+                            ),
+                          ),
                         ],
                       ),
-                      
-                      ElevatedButton(onPressed: () => Get.back(), child: Text("Close".tr, style: TextStyle(color: Colors.white),))
 
-
-
+                      ElevatedButton(
+                        onPressed: () => Get.back(),
+                        child: Text(
+                          "Close".tr,
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              )
+              ),
             );
           },
           child: Row(
@@ -539,10 +745,14 @@ class _TransactionTile extends StatelessWidget {
                 ),
                 child: Text(
                   item.type.isNotEmpty ? item.type[0].toUpperCase() : '?',
-                  style: TextStyle(color: typeColor, fontSize: 20.sp, fontWeight: FontWeight.w600),
+                  style: TextStyle(
+                    color: typeColor,
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
-              const SizedBox(width: 15,),
+              const SizedBox(width: 15),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -552,10 +762,18 @@ class _TransactionTile extends StatelessWidget {
                       spacing: 5,
                       children: [
                         Text(
-                          item.category.isEmpty ? "Uncategorized".tr : item.category.tr,
+                          item.category.isEmpty
+                              ? "Uncategorized".tr
+                              : item.category.tr,
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
-                        item.marked ? Icon(Icons.check_circle, color: Colors.green, size: 15,) : SizedBox.shrink()
+                        item.marked
+                            ? Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 15,
+                              )
+                            : SizedBox.shrink(),
                       ],
                     ),
                     Row(
@@ -563,7 +781,10 @@ class _TransactionTile extends StatelessWidget {
                       children: [
                         Text(
                           item.wallet.tr,
-                          style: const TextStyle(color: Colors.black54, fontSize: 12),
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12,
+                          ),
                         ),
                       ],
                     ),
@@ -575,14 +796,21 @@ class _TransactionTile extends StatelessWidget {
                 children: [
                   Text(
                     "৳${numberTranslation.toBnDigits(item.amount.toStringAsFixed(0))}",
-                    style: TextStyle(fontWeight: FontWeight.w800, color: typeColor),
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: typeColor,
+                    ),
                   ),
                   Text(
                     dateText,
-                    style: const TextStyle(color: Colors.black54, fontSize: 12, fontStyle: FontStyle.italic,),
+                    style: const TextStyle(
+                      color: Colors.black54,
+                      fontSize: 12,
+                      fontStyle: FontStyle.italic,
+                    ),
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

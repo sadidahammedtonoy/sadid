@@ -396,13 +396,4 @@ class savingController extends GetxController {
       return total.toStringAsFixed(0); // or 2 decimals if you want
     });
   }
-
-
-
-
-
-
-
-
-
 }

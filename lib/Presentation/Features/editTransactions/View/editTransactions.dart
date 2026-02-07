@@ -1,50 +1,23 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lottie/lottie.dart';
-import 'package:sadid/App/AppColors.dart';
-import 'package:sadid/Presentation/Features/AddTransactions/Model/addTransactionModel.dart';
-import '../../../../App/assets_path.dart';
-import '../../calcolator/View/calculator.dart';
+import '../../../../App/AppColors.dart';
+import '../../../../Core/snakbar.dart';
+import '../../Transcations/Model/tranModel.dart';
 import '../Controller/Controller.dart';
 
-class addTranscations extends StatelessWidget {
-  addTranscations({super.key});
-  final addTranscationsController controller = Get.find<addTranscationsController>();
-  TextEditingController amountController = TextEditingController();
-  TextEditingController noteController = TextEditingController();
-  TextEditingController personNameController = TextEditingController();
+class editTransactions extends StatelessWidget {
+  TranItem model;
+  editTransactions({super.key, required this.model});
+
+  final controller  = Get.find<editTransactionsController>();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text("Add Transactions".tr),
-        centerTitle: false,
-        titleSpacing: -10,
-      ),
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          Get.dialog(
-            CalculatorDialog(),
-            barrierDismissible: true,
-          );
-        },
-        child: SizedBox(
-          width: 50,
-          height: 50,
-          child: Lottie.asset(
-            assets_path.calculator,
-            fit: BoxFit.contain,
-            repeat: false
-          ),
-        ),
-      ),
+      appBar: AppBar(title: Text("Edit Transaction".tr),centerTitle: false, titleSpacing: -10, ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15.0),
         child: SingleChildScrollView(
@@ -57,15 +30,15 @@ class addTranscations extends StatelessWidget {
                 value: controller.types.contains(controller.selectedType.value)
                     ? controller.selectedType.value
                     : null,
-          
+
                 hint: Text(
                   "Select type".tr,
                   style: TextStyle(color: Colors.grey),
                 ),
-          
+
                 dropdownColor: Colors.white,
                 icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
-          
+
                 items: controller.types.map((item) {
                   return DropdownMenuItem<String>(
                     value: item,
@@ -75,11 +48,11 @@ class addTranscations extends StatelessWidget {
                     ),
                   );
                 }).toList(),
-          
+
                 onChanged: (value) {
                   if (value != null) controller.selectedType.value = value;
                 },
-          
+
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
@@ -186,7 +159,7 @@ class addTranscations extends StatelessWidget {
               )),
               Text("Amount".tr, style: TextStyle(fontSize: 16),),
               TextFormField(
-                controller: amountController,
+                controller: controller.amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   hintText: "Enter Amount".tr,
@@ -215,7 +188,7 @@ class addTranscations extends StatelessWidget {
                 children: [
                   Text("${controller.selectedType.value} Person Name".tr, style: TextStyle(fontSize: 16),),
                   TextFormField(
-                    controller: personNameController,
+                    controller: controller.personNameController,
                     decoration: InputDecoration(
                       hintText: "Type here..".tr,
                     ),
@@ -267,25 +240,59 @@ class addTranscations extends StatelessWidget {
               TextFormField(
                 minLines: 4,
                 maxLines: 5,
-                controller: noteController,
+                controller: controller.noteController,
                 decoration: InputDecoration(
                   hintText: "You can leave a note here...".tr,
                 ),
               ),
-              ElevatedButton(onPressed: (){
-                if(controller.selectedType.value == "Lent" || controller.selectedType.value == "Borrow"){
-                  addTranModel model = addTranModel(type: controller.selectedType.value, date: controller.selectedDate.value, amount: amountController.text, wallet: controller.selectedWallet.value, category: personNameController.text, note: noteController.text);
-                  controller.addMonthlyTransaction(model: model);
-                }else{
-                  addTranModel model = addTranModel(type: controller.selectedType.value, date: controller.selectedDate.value, amount: amountController.text, wallet: controller.selectedWallet.value, category: controller.selectedCategoryId.value ?? "", note: noteController.text);
-                  controller.addMonthlyTransaction(model: model);
+              ElevatedButton(onPressed: () async {
+                final old = controller.oldItem;
+                if (old == null) {
+                  AppSnackbar.show("No transaction selected".tr);
+                  return;
                 }
-              }, child: Obx(() => Text("Add ${controller.selectedType.value}".tr, style: TextStyle(color: Colors.white),)))
-              
+
+                final rawAmount = controller.amountController.text.trim();
+                final amount = double.tryParse(rawAmount);
+
+                if (amount == null || amount <= 0) {
+                  AppSnackbar.show("Please enter a valid amount".tr);
+                  return;
+                }
+
+                final isLentOrBorrow =
+                    controller.selectedType.value == "Lent" ||
+                        controller.selectedType.value == "Borrow";
+
+                final category = isLentOrBorrow
+                    ? controller.personNameController.text.trim()
+                    : (controller.selectedCategoryId.value ?? "");
+
+                final updated = TranItem(
+                  id: old.id,
+                  monthKey: old.monthKey, // recalculated inside edit method if date changes
+                  type: controller.selectedType.value,
+                  date: controller.selectedDate.value,
+                  amount: amount,
+                  wallet: controller.selectedWallet.value,
+                  category: category,
+                  note: controller.noteController.text.trim(),
+                  marked: old.marked,
+                );
+
+                await controller.editMonthlyTransaction(
+                  oldItem: old,
+                  updatedItem: updated,
+                );
+
+              }, child: Obx(() => Text("Edit ${controller.selectedType.value}".tr, style: TextStyle(color: Colors.white),)))
+
             ],
           ),
         ),
       ),
+
+
     );
   }
 }
