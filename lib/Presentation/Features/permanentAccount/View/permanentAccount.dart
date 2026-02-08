@@ -21,110 +21,112 @@ class MakePermanentDialog extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Header
-                  Row(
-                    children: [
-                      Text(
-                        "Make Permanent Account".tr,
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => Get.back(),
-                        icon: const Icon(Icons.close),
-                      )
-                    ],
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // Status card
-                  _statusCard(guest: guest, email: c.displayEmail.value),
-
-                  const SizedBox(height: 14),
-
-                  if (!guest) ...[
-                    Text(
-                      "Your account is already permanent.".tr,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Header
+                    Row(
+                      children: [
+                        Text(
+                          "Make Permanent Account".tr,
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () => Get.back(),
+                          icon: const Icon(Icons.close),
+                        )
+                      ],
                     ),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 46,
-                      child: ElevatedButton(
-                        onPressed: () => Get.back(),
-                        child: Text("Done".tr, style: TextStyle(color: Colors.white),),
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                  ] else ...[
-                    Text(
-                      "Create with Email".tr,
-                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
-                    ),
+                
                     const SizedBox(height: 10),
-
-                    TextField(
-                      controller: c.emailC,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: "Email".tr,
-                        border: OutlineInputBorder(),
+                
+                    // Status card
+                    _statusCard(guest: guest, email: c.displayEmail.value),
+                
+                    const SizedBox(height: 14),
+                
+                    if (!guest) ...[
+                      Text(
+                        "Your account is already permanent.".tr,
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-
-                    Obx(() => TextField(
-                      controller: c.passC,
-                      obscureText: c.hidePass.value,
-                      decoration: InputDecoration(
-                        labelText: "Password".tr,
-                        border: const OutlineInputBorder(),
-                        suffixIcon: IconButton(
-                          onPressed: () => c.hidePass.value = !c.hidePass.value,
-                          icon: Icon(c.hidePass.value ? Icons.visibility_off : Icons.visibility),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 46,
+                        child: ElevatedButton(
+                          onPressed: () => Get.back(),
+                          child: Text("Done".tr, style: TextStyle(color: Colors.white),),
                         ),
                       ),
-                    )),
-                    const SizedBox(height: 12),
-
-                    SizedBox(
-                      width: double.infinity,
-                      height: 46,
-                      child: ElevatedButton(
-                        onPressed: c.isLoading.value ? null : c.makePermanentWithEmail,
-                        child: Text("Make Permanent".tr, style: TextStyle(color: Colors.white),),
+                      const SizedBox(height: 6),
+                    ] else ...[
+                      Text(
+                        "Create with Email".tr,
+                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800),
                       ),
-                    ),
-
-                    const SizedBox(height: 14),
-                     Center(
-                      child: Text("OR".tr, style: TextStyle(fontWeight: FontWeight.w800)),
-                    ),
-                    const SizedBox(height: 14),
-
-                    SizedBox(
-                      width: double.infinity,
-                      height: 46,
-                      child: OutlinedButton.icon(
-                        onPressed: c.isLoading.value ? null : c.makePermanentWithGoogle,
-                        icon: Image.asset(assets_path.google, width: 25,),
-                        label: Text("Continue with Google".tr),
+                      const SizedBox(height: 10),
+                
+                      TextField(
+                        controller: c.emailC,
+                        keyboardType: TextInputType.emailAddress,
+                        decoration: InputDecoration(
+                          labelText: "Email".tr,
+                          border: OutlineInputBorder(),
+                        ),
                       ),
-                    ),
-
-                    const SizedBox(height: 10),
-                    Text(
-                      "This upgrades your guest account to a permanent account.".tr,
-                      style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
-                    ),
+                      const SizedBox(height: 12),
+                
+                      Obx(() => TextField(
+                        controller: c.passC,
+                        obscureText: c.hidePass.value,
+                        decoration: InputDecoration(
+                          labelText: "Password".tr,
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            onPressed: () => c.hidePass.value = !c.hidePass.value,
+                            icon: Icon(c.hidePass.value ? Icons.visibility_off : Icons.visibility),
+                          ),
+                        ),
+                      )),
+                      const SizedBox(height: 12),
+                
+                      SizedBox(
+                        width: double.infinity,
+                        height: 46,
+                        child: ElevatedButton(
+                          onPressed: c.isLoading.value ? null : c.makePermanentWithEmail,
+                          child: Text("Make Permanent".tr, style: TextStyle(color: Colors.white),),
+                        ),
+                      ),
+                
+                      const SizedBox(height: 14),
+                       Center(
+                        child: Text("OR".tr, style: TextStyle(fontWeight: FontWeight.w800)),
+                      ),
+                      const SizedBox(height: 14),
+                
+                      SizedBox(
+                        width: double.infinity,
+                        height: 46,
+                        child: OutlinedButton.icon(
+                          onPressed: c.isLoading.value ? null : c.makePermanentWithGoogle,
+                          icon: Image.asset(assets_path.google, width: 25,),
+                          label: Text("Continue with Google".tr),
+                        ),
+                      ),
+                
+                      const SizedBox(height: 10),
+                      Text(
+                        "This upgrades your guest account to a permanent account.".tr,
+                        style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+                      ),
+                    ],
                   ],
-                ],
+                ),
               ),
             ),
 
